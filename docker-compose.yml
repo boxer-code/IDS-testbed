@@ -118,7 +118,7 @@ services:
       
   logging-service:
     build:
-      context: .
+      context: .\Clearing-house
       dockerfile: .\docker\logging-service-multistage.Dockerfile
     container_name: "logging-service"
     depends_on:
@@ -128,24 +128,23 @@ services:
     environment:
         # Allowed levels: Off, Error, Warn, Info, Debug, Trace
         - API_LOG_LEVEL=Debug
-        - RUST_BACKTRACE=1
     ports:
         - "8000:8000"
     volumes:
-        - ./clearing-house-app/logging-service/Rocket.toml:/server/Rocket.toml
-        - ./clearing-house-app/logging-service/keys:/server/keys
-        - ./clearing-house-app/certs:/server/certs
+        - ./Clearing-house/clearing-house-app/logging-service/Rocket.toml:/server/Rocket.toml
+        - ./Clearing-house/clearing-house-app/logging-service/keys:/server/keys
+        - ./Clearing-house/clearing-house-app/certs:/server/certs
   consumer-core:
     container_name: "consumer-core"
     image: fraunhoferaisec/trusted-connector-core:6.3.0
     tty: true
     stdin_open: true
     volumes:
-        - ./trusted-connector/allow-all-flows.pl:/root/deploy/allow-all-flows.pl
-        - ./trusted-connector/consumer-keystore.p12:/root/etc/keystore.p12
-        - ./trusted-connector/truststore.p12:/root/etc/truststore.p12
-        - ./trusted-connector/clearing-house-processors-0.8.0.jar:/root/jars/clearing-house-processors.jar
-        - ./trusted-connector/routes/clearing-house-routes.xml:/root/deploy/clearing-house-routes.xml
+        - ./Clearing-house/trusted-connector/allow-all-flows.pl:/root/deploy/allow-all-flows.pl
+        - ./Clearing-house/trusted-connector/consumer-keystore.p12:/root/etc/keystore.p12
+        - ./Clearing-house/trusted-connector/truststore.p12:/root/etc/truststore.p12
+        - ./Clearing-house/trusted-connector/clearing-house-processors-0.8.0.jar:/root/jars/clearing-house-processors.jar
+        - ./Clearing-house/trusted-connector/routes/clearing-house-routes.xml:/root/deploy/clearing-house-routes.xml
         - //var/run/docker.sock://var/run/docker.sock
     environment:
       TC_CH_ISSUER_CONNECTOR: "https://w3id.org/idsa/core/issuerConnector"
@@ -170,7 +169,7 @@ services:
       - 27018:27017
   document-api:
     build:
-      context: .
+      context: .\Clearing-house
       dockerfile: .\docker\document-api-multistage.Dockerfile
     container_name: "document-api"
     depends_on:
@@ -182,11 +181,11 @@ services:
     ports:
         - "8001:8001"
     volumes:
-        - ./clearing-house-app/document-api/Rocket.toml:/server/Rocket.toml
-        - ./clearing-house-app/certs:/server/certs
+        - ./Clearing-house/clearing-house-app/document-api/Rocket.toml:/server/Rocket.toml
+        - ./Clearing-house/clearing-house-app/certs:/server/certs
   keyring-api:
     build:
-      context: .
+      context: .\Clearing-house
       dockerfile: .\docker\keyring-api-multistage.Dockerfile
     container_name: "keyring-api"
     depends_on:
@@ -197,14 +196,13 @@ services:
     ports:
         - "8002:8002"
     volumes:
-        - ./clearing-house-app/keyring-api/init_db:/server/init_db
-        - ./clearing-house-app/keyring-api/Rocket.toml:/server/Rocket.toml
-        - ./clearing-house-app/certs:/server/certs
+        - ./Clearing-house/clearing-house-app/keyring-api/init_db:/server/init_db
+        - ./Clearing-house/clearing-house-app/keyring-api/Rocket.toml:/server/Rocket.toml
+        - ./Clearing-house/clearing-house-app/certs:/server/certs
         
 volumes:
   broker-fuseki:
 
 networks:
-  default:
-    external: 
-      name: broker-localhost_default
+  default: 
+    name: testbed
