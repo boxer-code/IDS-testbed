@@ -1,4 +1,4 @@
 * text=auto
 *.bat eol=lf
 *.sln text eol=lf
-*.Dockerfile text=lf
+*.Dockerfile text eol=lf
